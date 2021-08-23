@@ -1,6 +1,5 @@
 ---
-mssql_accept_microsoft_odbc_driver_17_for_sql_server_eula: true
-mssql_accept_microsoft_cli_utilities_for_sql_server_eula: true
-mssql_accept_microsoft_sql_server_standard_eula: true
-mssql_edition: Evaluation
-mssql_password: "p@55w0rD"
+ansible_connection: winrm
+ansible_port: 5986
+ansible_winrm_transport: ntlm
+ansible_winrm_server_cert_validation: ignore
