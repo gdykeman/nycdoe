@@ -1,0 +1,48 @@
+---
+- name: IIS configuration
+  hosts: windows
+
+  tasks:
+    - name: Enable IIS
+      win_feature:
+        name: Web-Server
+        state: present
+        include_sub_features: yes
+        include_management_tools: yes
+      register: iis_output
+
+    - name: reboot if required
+      win_reboot:
+      when: iis_output.reboot_required
+
+    - name: Create a new application pool in 'Started' state
+      win_iis_webapppool:
+        name: AppPool
+        state: started
+
+    - name: DOE IIS site
+      win_iis_website:
+        name: "DOE"
+        state: started
+        port: 80
+        ip: 127.0.0.1
+        hostname: doe.local
+        application_pool: "AppPool"
+        physical_path: c:\sites\doe
+        parameters: logfile.directory:c:\sites\logs
+      register: website
+
+    - name: Create a virtual directory if it does not exist
+      win_iis_virtualdirectory:
+        name: somedirectory
+        site: somesite
+        state: present
+        physical_path: C:\virtualdirectory\some
+
+    - name: Create a virtual directory on an application if it does not exist
+      win_iis_virtualdirectory:
+        name: somedirectory
+        site: somesite
+        application: someapp
+        state: present
+        physical_path: C:\virtualdirectory\some
