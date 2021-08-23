@@ -3,6 +3,9 @@
   hosts: localhost
   become: no
 
+  vars:
+    win_template: vRA_DIIT_WIN2016D_Template_Dec_2021
+
   tasks:
     - name: Create a virtual machine from a template
       vmware_guest:
@@ -10,31 +13,15 @@
         # username: "{{ vcenter_username }}"
         # password: "{{ vcenter_password }}"
         validate_certs: no
-        folder: /testvms
-        name: testvm_2
+        folder: /Ansible
+        name: ansible_poc_vm
         state: poweredon
         template: "{{ win_template }}"
+        customization_spec: "DIIT_Windows"
         networks:
-        - name: VM Network
-          ip: 192.168.1.100
-          netmask: 255.255.255.0
-          gateway: 192.168.1.1
-          domain: my_domain
-          dns_servers:
-          - 192.168.1.1
-          - 192.168.1.2
-        - vlan: 1234
-          type: dhcp
-        cdrom:
-          type: iso
-          iso_path: "[datastore1] livecd.iso"
+        - name: NSXPG-172.24.42.0
         customization:
-          autologon: yes
-          dns_servers:
-          - 192.168.1.1
-          - 192.168.1.2
-          domain: my_domain
-          password: new_vm_password
+          password: ansible_password
           runonce:
           - powershell.exe -ExecutionPolicy Unrestricted -File C:\Windows\Temp\ConfigureRemotingForAnsible.ps1 -ForceNewSSLCert -EnableCredSSP
         wait_for_customization: yes
