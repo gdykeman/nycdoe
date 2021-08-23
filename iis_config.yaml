@@ -3,18 +3,6 @@
   hosts: windows
 
   tasks:
-    - name: Enable IIS
-      win_feature:
-        name: Web-Server
-        state: present
-        include_sub_features: yes
-        include_management_tools: yes
-      register: iis_output
-
-    - name: reboot if required
-      win_reboot:
-      when: iis_output.reboot_required
-
     - name: Create a new application pool in 'Started' state
       win_iis_webapppool:
         name: AppPool

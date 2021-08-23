@@ -1,0 +1,16 @@
+---
+- name: Enable IIS
+  hosts: all
+
+  tasks:
+    - name: Enable IIS
+      win_feature:
+        name: Web-Server
+        state: present
+        include_sub_features: yes
+        include_management_tools: yes
+      register: iis_output
+
+    - name: reboot if required
+      win_reboot:
+      when: iis_output.reboot_required
