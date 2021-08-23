@@ -1,6 +1,6 @@
 ---
 - name: IIS configuration
-  hosts: windows
+  hosts: all
 
   tasks:
     - name: Create a new application pool in 'Started' state
