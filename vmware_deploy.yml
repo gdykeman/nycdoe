@@ -5,10 +5,10 @@
 
   tasks:
     - name: Create a virtual machine from a template
-      community.vmware.vmware_guest:
-        hostname: "{{ vcenter_hostname }}"
-        username: "{{ vcenter_username }}"
-        password: "{{ vcenter_password }}"
+      vmware_guest:
+        # hostname: "{{ vcenter_hostname }}"
+        # username: "{{ vcenter_username }}"
+        # password: "{{ vcenter_password }}"
         validate_certs: no
         folder: /testvms
         name: testvm_2
