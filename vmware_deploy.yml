@@ -1,0 +1,43 @@
+---
+- name: Deploy VM from template
+  hosts: localhost
+  become: no
+
+  tasks:
+    - name: Create a virtual machine from a template
+      community.vmware.vmware_guest:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: no
+        folder: /testvms
+        name: testvm_2
+        state: poweredon
+        template: "{{ win_template }}"
+        networks:
+        - name: VM Network
+          ip: 192.168.1.100
+          netmask: 255.255.255.0
+          gateway: 192.168.1.1
+          domain: my_domain
+          dns_servers:
+          - 192.168.1.1
+          - 192.168.1.2
+        - vlan: 1234
+          type: dhcp
+        cdrom:
+          type: iso
+          iso_path: "[datastore1] livecd.iso"
+        customization:
+          autologon: yes
+          dns_servers:
+          - 192.168.1.1
+          - 192.168.1.2
+          domain: my_domain
+          password: new_vm_password
+          runonce:
+          - powershell.exe -ExecutionPolicy Unrestricted -File C:\Windows\Temp\ConfigureRemotingForAnsible.ps1 -ForceNewSSLCert -EnableCredSSP
+        wait_for_customization: yes
+        wait_for_ip_address: yes
+      delegate_to: localhost
+      register: deploy
