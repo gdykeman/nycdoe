@@ -5,12 +5,11 @@
   tasks:
     - name: enable features
       win_feature:
-        name: "{{ item }}"
+        name: "{{ win_features }}"
         state: present
         include_sub_features: yes
         include_management_tools: yes
       register: win_output
-      loop: "{{ win_features }}"
 
     - name: reboot server if required
       win_reboot:
