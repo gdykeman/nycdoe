@@ -54,5 +54,5 @@ apps: [ "applicationmailweb", "aprlaccessweb", "aspnet_client",
 "vendorinquirytrackingweb", "video", "vportalbridge", "w2correctionweb", "wageworksweb",
 "workerscompensationweb" ]
 
-template_apps: [ "GOOOOOOG", "applicationmailweb", "aprlaccessweb", "aspnet_client",
+template_apps: [ "applicationmailweb", "aprlaccessweb", "aspnet_client",
 "bankaccountrequestweb", "c2formweb" ]
