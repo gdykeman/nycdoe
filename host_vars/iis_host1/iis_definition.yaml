@@ -14,7 +14,7 @@ win_features:
 connect_as: specific_user
 
 # iis definition(s)
-iis_username: TestUser
+iis_username: TestUser1
 iis_password: TestPassword
 iis_site: "Default Web Site"
 
@@ -26,6 +26,11 @@ app_pools:
   pool2:
     name: payrollportal2.0
     state: present
+
+# Attributes
+pipeline_mode: Integrated
+runtime_version: v4.0
+max_processes: 1
 
 # Specific app pool to utilize
 app_pool: payrollportal
