@@ -4,7 +4,8 @@ win_features:
   - XPS-Viewer
   - SNMP-Service
   - Web-Mgmt-Tools
-  - Web-WHC,BITS
+  - Web-WHC
+  - BITS
   - PowerShellRoot
   - Web-Server
 
@@ -23,11 +24,12 @@ app_pools:
     name: payrollportal
     state: present
   pool2:
-    name: payrollportal
+    name: payrollportal2.0
     state: present
 
 # Specific app pool to utilize
 app_pool: payrollportal
+app_name: c2formweb
 
 # directory path
 dir_path: 'c:\inetpub\wwwroot\{{app_pool}}\'

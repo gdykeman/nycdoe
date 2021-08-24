@@ -1,6 +1,7 @@
 ---
 - name: iis configuration
   hosts: all
+  gather_facts: no
 
   tasks:
     - name: enable features
@@ -19,6 +20,16 @@
       win_iis_webapppool:
         name: "{{ item.value.name }}"
         state: "{{ item.value.state }}"
+        attributes:
+          managedPipelineMode: Integrated
+          managedRuntimeVersion: v4.0
+      loop: "{{ app_pools | dict2items }}"
+      tags: run
+
+    - name: Ensure app pool path exists
+      win_file:
+        path: 'c:\inetpub\wwwroot\{{item.value.name}}'
+        state: directory
       loop: "{{ app_pools | dict2items }}"
 
     - name: Configure webapplication on IIS (specific_user)
@@ -28,6 +39,7 @@
         state: "{{ item.value.state }}"
         username: "{{ iis_username }}"
         password: "{{ iis_password }}"
+        physical_path: 'c:\inetpub\wwwroot\{{item.value.name}}'
         connect_as: "{{ connect_as | default('pass_through')}}"
       loop: "{{ app_pools | dict2items }}"
 
@@ -45,13 +57,19 @@
         physical_path: "{{ dir_path }}{{item}}"
       loop: "{{ apps }}"
 
-    - name: DOE IIS site
-      win_iis_website:
-        name: "{{ item }}"
-        state: started
-        application_pool: "{{app_pool}}"
-        physical_path: "{{ dir_path }}{{ item }}"
-      loop: "{{ apps }}"
+    - name: Copy over web files
+      win_copy:
+        src: files/iis/
+        dest: "{{ dir_path }}{{app_name}}"
+      tags: run
+
+    # - name: iis website configuration
+    #   win_iis_website:
+    #     name: "{{ item }}"
+    #     state: started
+    #     application_pool: "{{app_pool}}"
+    #     physical_path: "{{ dir_path }}{{ item }}"
+    #   loop: "{{ apps }}"
 
     - name: win shell
       win_command: "{{ cli_command }}"
