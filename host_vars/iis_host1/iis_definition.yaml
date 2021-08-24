@@ -18,26 +18,29 @@ iis_username: TestUser1
 iis_password: TestPassword
 iis_site: "Default Web Site"
 
-# App pool definition(s)
+# App pool defintion(s)
 app_pools:
   pool1:
     name: payrollportal
     state: present
+    pipeline_mode: Integrated
+    runtime_version: v4.0
+    max_processes: 1
   pool2:
     name: payrollportal2.0
     state: present
+    pipeline_mode: Integrated
+    runtime_version: v4.0
+    max_processes: 1
 
-# Attributes
-pipeline_mode: Integrated
-runtime_version: v4.0
-max_processes: 1
 
 # Specific app pool to utilize
 app_pool: payrollportal
 app_name: c2formweb
 
 # directory path
-dir_path: 'c:\inetpub\wwwroot\{{app_pool}}\'
+# dir_path: 'c:\inetpub\wwwroot\{{app_pool}}\'
+dir_path: 'c:\inetpub\wwwroot\'
 
 apps: [ "applicationmailweb", "aprlaccessweb", "aspnet_client",
 "bankaccountrequestweb", "c2formweb", "collegesavingsweb", "common", "configuration",
@@ -50,3 +53,6 @@ apps: [ "applicationmailweb", "aprlaccessweb", "aspnet_client",
 "salarydiffstepweb", "savingbondsweb", "services", "settings", "trainingsessionweb",
 "vendorinquirytrackingweb", "video", "vportalbridge", "w2correctionweb", "wageworksweb",
 "workerscompensationweb" ]
+
+template_apps: [ "GOOOOOOG", "applicationmailweb", "aprlaccessweb", "aspnet_client",
+"bankaccountrequestweb", "c2formweb" ]

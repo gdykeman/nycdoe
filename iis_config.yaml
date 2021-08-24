@@ -17,62 +17,83 @@
       when: win_output.reboot_required
 
     - name: Create a new application pool in 'Started' state
-      win_iis_webapppool:
+      community.windows.win_iis_webapppool:
         name: "{{ item.value.name }}"
         state: "{{ item.value.state }}"
         attributes:
-          managedPipelineMode: "{{ pipeline_mode }}"
-          managedRuntimeVersion: "{{ runtime_version }}"
-          processModel.maxProcesses: "{{ max_processes }}"
+          managedPipelineMode: "{{ item.value.pipeline_mode }}"
+          managedRuntimeVersion: "{{ item.value.runtime_version }}"
+          processModel.maxProcesses: "{{ item.value.max_processes }}"
       loop: "{{ app_pools | dict2items }}"
-      tags: run
-
-    - name: Ensure app pool path exists
-      win_file:
-        path: 'c:\inetpub\wwwroot\{{ item.value.name }}'
-        state: directory
-      loop: "{{ app_pools | dict2items }}"
-      tags: run
-
-    - name: Configure webapplication on IIS (specific_user)
-      win_iis_webapplication:
-        name: "{{ item.1 }}"
-        site: "{{ iis_site }}"
-        state: "{{ item.0.state }}"
-        username: "{{ iis_username }}"
-        password: "{{ iis_password }}"
-        physical_path: 'c:\inetpub\wwwroot\{{ item.0.name }}'
-        connect_as: "{{ connect_as | default('pass_through')}}"
-        applicationpool: "{{ item.0.name }}"
-      loop: "{{ app_pools | json_query('*') | product(apps) | list}}"
-      tags: run
 
     - name: Ensure directories are present
       win_file:
-        path: '{{ dir_path }}{{item}}'
+        path: '{{ dir_path }}{{ item.0.name }}\{{ item.1 }}'
         state: directory
-      loop: "{{ apps }}"
+      loop: "{{ app_pools | json_query('*') | product(apps) | list}}"
 
     - name: Create a virtual directory if it does not exist
-      win_iis_virtualdirectory:
-        name: "{{ item }}"
+      community.windows.win_iis_virtualdirectory:
+        name: '{{ item.1 }}'
+        site: "{{ iis_site }}"
+        application: "{{ item.1 }}"
+        state: present
+        physical_path: '{{ dir_path }}{{ item.0.name }}\{{ item.1 }}'
+      loop: "{{ app_pools | json_query('*') | product(template_apps) | list}}"
+      tags: create_vdir
+
+    - name: Create a virtual directory if it does not exist
+      community.windows.win_iis_virtualdirectory:
+        name: c2formweb
+        site: "{{ iis_site }}"
+        application: c2formweb
+        state: absent
+        physical_path: '{{ dir_path }}payrollportal\c2formweb'
+      tags: delete_vdir
+    # - name: Delete virtual directory
+    #   community.windows.win_iis_virtualdirectory:
+    #     name: "{{ item.1 }}"
+    #     site: "{{ iis_site }}"
+    #     application: "{{ item.1 }}"
+    #     state: absent
+    #     physical_path: '{{ dir_path }}{{ item.0.name }}\{{ item.1 }}'
+    #   loop: "{{ app_pools | json_query('*') | product(apps) | list}}"
+    #   tags: delete_vdir
+
+    - name: Configure webapplication on IIS (specific_user)
+      community.windows.win_iis_webapplication:
+        name: "{{ item.1 }}"
         site: "{{ iis_site }}"
         state: present
-        physical_path: "{{ dir_path }}{{item}}"
-      loop: "{{ apps }}"
+        username: "{{ iis_username }}"
+        password: "{{ iis_password }}"
+        physical_path: '{{ dir_path }}{{ item.0.name }}\{{ item.1 }}'
+        connect_as: "{{ connect_as | default('pass_through')}}"
+        application_pool: "{{ item.0.name }}"
+      loop: "{{ app_pools | json_query('*') | product(apps) | list}}"
+      tags: create_app
 
-    - name: Copy over web files
-      win_copy:
-        src: files/iis/
-        dest: "{{ dir_path }}{{app_name}}"
+    # - name: Delete webapplication on IIS (specific_user)
+    #   community.windows.win_iis_webapplication:
+    #     name: "{{ item.1 }}"
+    #     site: "{{ iis_site }}"
+    #     state: absent
+    #     username: "{{ iis_username }}"
+    #     password: "{{ iis_password }}"
+    #     physical_path: '{{ dir_path }}{{ item.0.name }}\{{ item.1 }}'
+    #     connect_as: "{{ connect_as | default('pass_through')}}"
+    #     applicationpool: "{{ item.0.name }}"
+    #   loop: "{{ app_pools | json_query('*') | product(apps) | list}}"
+    #   tags: delete_app
 
-    # - name: iis website configuration
-    #   win_iis_website:
-    #     name: "{{ item }}"
-    #     state: started
-    #     application_pool: "{{app_pool}}"
-    #     physical_path: "{{ dir_path }}{{ item }}"
-    #   loop: "{{ apps }}"
+    - name: template website
+      include_tasks: website_tasks.yaml
+      args:
+        apply:
+          tags:
+            - template
+      loop: "{{ app_pools | json_query('*') | product(template_apps) | list}}"
+      tags: template
 
     - name: win shell
       win_command: "{{ cli_command }}"
