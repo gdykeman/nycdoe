@@ -1,36 +1,63 @@
 ---
-- name: IIS configuration
+- name: iis configuration
   hosts: all
 
   tasks:
+    - name: enable features
+      win_feature:
+        name: "{{ item }}"
+        state: present
+        include_sub_features: yes
+        include_management_tools: yes
+      register: win_output
+      loop: "{{ win_features }}"
+
+    - name: reboot server if required
+      win_reboot:
+      when: win_output.reboot_required
+
     - name: Create a new application pool in 'Started' state
       win_iis_webapppool:
-        name: AppPool
-        state: started
+        name: "{{ item.value.name }}"
+        state: "{{ item.value.state }}"
+      loop: "{{ app_pools | dict2items }}"
 
-    - name: DOE IIS site
-      win_iis_website:
-        name: "DOE"
-        state: started
-        port: 80
-        ip: 127.0.0.1
-        hostname: doe.local
-        application_pool: "AppPool"
-        physical_path: c:\sites\doe
-        parameters: logfile.directory:c:\sites\logs
-      register: website
+    - name: Configure webapplication on IIS (specific_user)
+      win_iis_webapplication:
+        name: "{{ item.value.name }}"
+        site: "{{ iis_site }}"
+        state: "{{ item.value.state }}"
+        username: "{{ iis_username }}"
+        password: "{{ iis_password }}"
+        connect_as: "{{ connect_as | default('pass_through')}}"
+      loop: "{{ app_pools | dict2items }}"
+
+    - name: Ensure directories are present
+      win_file:
+        path: "{{ dir_path }}{{item}}"
+        state: directory
+      loop: "{{ apps }}"
 
     - name: Create a virtual directory if it does not exist
       win_iis_virtualdirectory:
-        name: somedirectory
-        site: somesite
+        name: "{{ item }}"
+        site: "{{ iis_site }}"
         state: present
-        physical_path: C:\virtualdirectory\some
+        physical_path: "{{ dir_path }}{{item}}"
+      loop: "{{ apps }}"
 
-    - name: Create a virtual directory on an application if it does not exist
-      win_iis_virtualdirectory:
-        name: somedirectory
-        site: somesite
-        application: someapp
-        state: present
-        physical_path: C:\virtualdirectory\some
+    - name: DOE IIS site
+      win_iis_website:
+        name: "{{ item }}"
+        state: started
+        application_pool: "{{app_pool}}"
+        physical_path: "{{ dir_path }}{{ item }}"
+      loop: "{{ apps }}"
+
+    - name: win shell
+      win_command: "{{ cli_command }}"
+      when: cli_command is defined
+
+    - name: run script
+      win_shell: "{{ shell_command }}"
+      when: shell_command is defined

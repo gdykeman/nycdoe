@@ -1,7 +1,0 @@
----
-- name: Configure SQL Server
-  hosts: sqlhost
-
-  tasks:
-    - include_role:
-        name: microsoft.sql.server
