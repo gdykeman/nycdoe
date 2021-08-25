@@ -7,4 +7,4 @@
 - name: Copy over web files
   win_copy:
     src: files/iis/
-    dest: '{{ dir_path }}{{item.0.name}}\{{item.1}}'
+    dest: '{{ dir_path }}{{item.value.pool}}\{{item.key}}'
