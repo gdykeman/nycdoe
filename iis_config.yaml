@@ -1,7 +1,18 @@
 ---
-- name: iis configuration
+- name: iis tag check
   hosts: all
   gather_facts: no
+
+  tasks:
+    - name: Fail due to no tags
+      fail:
+        msg: "You must provide a tag of either create or delete"
+
+---
+- name: iis create configuration
+  hosts: all
+  gather_facts: no
+  tags: create
 
   tasks:
     - name: enable features
@@ -16,66 +27,67 @@
       ansible.windows.win_reboot:
       when: win_output.reboot_required
 
-    - name: create block
-      block:
-        - name: Create a new application pool in 'Started' state
-          community.windows.win_iis_webapppool:
-            name: "{{ item.value.name }}"
-            state: "{{ item.value.state }}"
-            attributes:
-              managedPipelineMode: "{{ item.value.pipeline_mode }}"
-              managedRuntimeVersion: "{{ item.value.runtime_version }}"
-              processModel.maxProcesses: "{{ item.value.max_processes }}"
-          loop: "{{ app_pools | dict2items }}"
+    - name: Create a new application pool in 'Started' state
+      community.windows.win_iis_webapppool:
+        name: "{{ item.value.name }}"
+        state: "{{ item.value.state }}"
+        attributes:
+          managedPipelineMode: "{{ item.value.pipeline_mode }}"
+          managedRuntimeVersion: "{{ item.value.runtime_version }}"
+          processModel.maxProcesses: "{{ item.value.max_processes }}"
+      loop: "{{ app_pools | dict2items }}"
 
-        - name: Ensure directories are present
-          ansible.windows.win_file:
-            path: '{{ dir_path }}{{ app_pool }}\{{ item }}'
-            state: directory
-          loop: "{{ template_apps }}"
+    - name: Ensure directories are present
+      ansible.windows.win_file:
+        path: '{{ dir_path }}{{ app_pool }}\{{ item }}'
+        state: directory
+      loop: "{{ template_apps }}"
 
-        - name: Ensure virtual directories are present
-          community.windows.win_iis_virtualdirectory:
-            name: '{{ item }}'
-            site: "{{ iis_site }}"
-            application: "{{ item }}"
-            state: present
-            physical_path: '{{ dir_path }}{{ app_pool }}\{{ item }}'
-          loop: "{{ template_apps }}"
-          tags: create_vdir
+    - name: Ensure virtual directories are present
+      community.windows.win_iis_virtualdirectory:
+        name: '{{ item }}'
+        site: "{{ iis_site }}"
+        application: "{{ item }}"
+        state: present
+        physical_path: '{{ dir_path }}{{ app_pool }}\{{ item }}'
+      loop: "{{ template_apps }}"
 
-        - name: Configure webapplication on IIS (specific_user)
-          community.windows.win_iis_webapplication:
-            name: "{{ item }}"
-            site: "{{ iis_site }}"
-            state: present
-            username: "{{ iis_username }}"
-            password: "{{ iis_password }}"
-            physical_path: '{{ dir_path }}payrollportal\{{ item }}'
-            connect_as: "{{ connect_as | default('pass_through')}}"
-            application_pool: "{{ app_pool }}"
-          loop: "{{ template_apps }}"
-          tags: create_app
+    - name: Configure webapplication on IIS (specific_user)
+      community.windows.win_iis_webapplication:
+        name: "{{ item }}"
+        site: "{{ iis_site }}"
+        state: present
+        username: "{{ iis_username }}"
+        password: "{{ iis_password }}"
+        physical_path: '{{ dir_path }}payrollportal\{{ item }}'
+        connect_as: "{{ connect_as | default('pass_through')}}"
+        application_pool: "{{ app_pool }}"
+      loop: "{{ template_apps }}"
 
-        - name: template website
-          include_tasks: website_tasks.yaml
-          args:
-            apply:
-              tags:
-                - template
-          loop: "{{ app_pools | json_query('*') | product(template_apps) | list}}"
-          tags: template
+    - name: template website
+      include_tasks: website_tasks.yaml
+      args:
+        apply:
+          tags:
+            - template
+      loop: "{{ app_pools | json_query('*') | product(template_apps) | list}}"
+      tags: template
 
-        - name: win shell
-          ansible.windows.win_command: "{{ cli_command }}"
-          when: cli_command is defined
+    - name: win shell
+      ansible.windows.win_command: "{{ cli_command }}"
+      when: cli_command is defined
 
-        - name: run script
-          ansible.windows.win_shell: "{{ shell_command }}"
-          when: shell_command is defined
+    - name: run script
+      ansible.windows.win_shell: "{{ shell_command }}"
+      when: shell_command is defined
 
-      tags: create
+---
+- name: iis delete configuration
+  hosts: all
+  gather_facts: no
+  tags: delete
 
+  tasks:
     - name: delete block
       block:
       - name: Delete webapplication on IIS (specific_user)
