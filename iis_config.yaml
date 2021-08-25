@@ -26,7 +26,7 @@
       ansible.windows.win_reboot:
       when: win_output.reboot_required
 
-    - name: Create a new application pool in 'Started' state
+    - name: Create the application pool(s)
       community.windows.win_iis_webapppool:
         name: "{{ item.key }}"
         state: "{{ item.value.state }}"
@@ -58,7 +58,7 @@
         state: "{{ item.value.state }}"
         username: "{{ iis_username }}"
         password: "{{ iis_password }}"
-        physical_path: '{{ dir_path }}payrollportal\{{ item.key }}'
+        physical_path: '{{ dir_path }}{{ item.value.pool }}\{{ item.key }}'
         connect_as: "{{ connect_as | default('pass_through')}}"
         application_pool: "{{ item.value.pool }}"
       loop: "{{ dictionary_apps | dict2items }}"
