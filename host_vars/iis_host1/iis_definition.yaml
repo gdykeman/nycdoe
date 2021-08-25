@@ -20,14 +20,12 @@ iis_site: "Default Web Site"
 
 # App pool defintion(s)
 app_pools:
-  pool1:
-    name: payrollportal
+  payrollportal:
     state: present
     pipeline_mode: Integrated
     runtime_version: v4.0
     max_processes: 1
-  pool2:
-    name: payrollportal2.0
+  payrollportal2.0:
     state: present
     pipeline_mode: Integrated
     runtime_version: v2.0
@@ -52,5 +50,19 @@ apps: [ "applicationmailweb", "aprlaccessweb", "aspnet_client",
 "vendorinquirytrackingweb", "video", "vportalbridge", "w2correctionweb", "wageworksweb",
 "workerscompensationweb" ]
 
-template_apps: [ "applicationmailweb", "aprlaccessweb", "aspnet_client",
-"bankaccountrequestweb", "c2formweb" ]
+dictionary_apps:
+  applicationmailweb:
+    pool: payrollportal
+    state: present
+  aprlaccessweb:
+    pool: payrollportal2.0
+    state: present
+  aspnet_client:
+    pool: payrollportal
+    state: present
+  bankaccountrequestweb:
+    pool: payrollportal
+    state: present
+  c2formweb:
+    pool: payrollportal2.0
+    state: present
