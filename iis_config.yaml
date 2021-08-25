@@ -57,14 +57,14 @@
           loop: "{{ template_apps }}"
           tags: create_app
 
-        # - name: template website
-        #   include_tasks: website_tasks.yaml
-        #   args:
-        #     apply:
-        #       tags:
-        #         - template
-        #   loop: "{{ app_pools | json_query('*') | product(template_apps) | list}}"
-        #   tags: template
+        - name: template website
+          include_tasks: website_tasks.yaml
+          args:
+            apply:
+              tags:
+                - template
+          loop: "{{ app_pools | json_query('*') | product(template_apps) | list}}"
+          tags: template
 
         - name: win shell
           ansible.windows.win_command: "{{ cli_command }}"
