@@ -71,7 +71,10 @@
           when: cli_command is defined
 
         - name: run script
-          ansible.windows.win_powershell: "{{ shell_command }}"
+          # runs an actual PowerShell script
+          # ansible.windows.win_powershell: "{{ shell_command }}"
+          # runs arbitrary shell commands, defaults to powershell 
+          ansible.windows.win_shell: "{{ shell_command }}"
           when: shell_command is defined
 
       tags: create
@@ -92,7 +95,7 @@
         tags: delete
 
       - name: Remove virtual directories
-        ansible.windows.win_powershell:  Remove-Item -LiteralPath {{ dir_path }}{{ app_pool }}\{{ item }} -Recurse -Force
+        ansible.windows.win_shell:  Remove-Item -LiteralPath {{ dir_path }}{{ app_pool }}\{{ item }} -Recurse -Force
         loop: "{{ template_apps }}"
         tags: delete
         ignore_errors: yes
