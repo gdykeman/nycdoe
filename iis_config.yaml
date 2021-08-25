@@ -100,7 +100,7 @@
       tags: delete
 
     - name: Remove virtual directories
-      win_shell:  Remove-Item -LiteralPath {{ dir_path }}{{ app_pool }}\{{ item }} -Recurse -Force 
+      win_shell:  Remove-Item -LiteralPath {{ dir_path }}{{ app_pool }}\{{ item }} -Recurse -Force
       loop: "{{ template_apps }}"
       tags: delete
       ignore_errors: yes
