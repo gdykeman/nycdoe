@@ -66,18 +66,19 @@
             application_pool: "{{ app_pool }}"
           loop: "{{ template_apps }}"
           tags: create_app
-        - name: template website
-          include_tasks: website_tasks.yaml
-          args:
-            apply:
-              tags:
-                - template
-          loop: "{{ app_pools | json_query('*') | product(template_apps) | list}}"
-          tags: template
 
-        - name: win shell
-          win_command: "{{ cli_command }}"
-          when: cli_command is defined
+        # - name: template website
+        #   include_tasks: website_tasks.yaml
+        #   args:
+        #     apply:
+        #       tags:
+        #         - template
+        #   loop: "{{ app_pools | json_query('*') | product(template_apps) | list}}"
+        #   tags: template
+
+        # - name: win shell
+        #   win_command: "{{ cli_command }}"
+        #   when: cli_command is defined
       tags: create
 
 
