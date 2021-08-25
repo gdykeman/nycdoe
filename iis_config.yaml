@@ -8,7 +8,6 @@
       fail:
         msg: "You must provide a tag of either create or delete"
 
----
 - name: iis create configuration
   hosts: all
   gather_facts: no
@@ -81,7 +80,6 @@
       ansible.windows.win_shell: "{{ shell_command }}"
       when: shell_command is defined
 
----
 - name: iis delete configuration
   hosts: all
   gather_facts: no
