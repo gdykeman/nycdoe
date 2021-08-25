@@ -102,7 +102,8 @@
         tags: delete
 
       - name: Remove virtual directories
-        ansible.windows.win_shell:  Remove-Item -LiteralPath {{ dir_path }}{{ app_pool }}\{{ item }} -Recurse -Force
+        ansible.windows.win_shell:
+          _raw_params: Remove-Item -LiteralPath {{ dir_path }}{{ app_pool }}\{{ item }} -Recurse -Force
         loop: "{{ template_apps }}"
         tags: delete
         ignore_errors: yes
