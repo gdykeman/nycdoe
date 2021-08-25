@@ -86,21 +86,24 @@
       win_shell: "{{ shell_command }}"
       when: shell_command is defined
 
-    - name: Delete webapplication on IIS (specific_user)
-      community.windows.win_iis_webapplication:
-        name: "{{ item }}"
-        site: "{{ iis_site }}"
-        state: absent
-        username: "{{ iis_username }}"
-        password: "{{ iis_password }}"
-        physical_path: '{{ dir_path }}{{ app_pool }}\{{ item }}'
-        connect_as: "{{ connect_as | default('pass_through')}}"
-        applicationpool: "{{ app_pool }}"
-      loop: "{{ template_apps }}"
-      tags: delete
+    - name: delete block
+      block:
+      - name: Delete webapplication on IIS (specific_user)
+        community.windows.win_iis_webapplication:
+          name: "{{ item }}"
+          site: "{{ iis_site }}"
+          state: absent
+          username: "{{ iis_username }}"
+          password: "{{ iis_password }}"
+          physical_path: '{{ dir_path }}{{ app_pool }}\{{ item }}'
+          connect_as: "{{ connect_as | default('pass_through')}}"
+          applicationpool: "{{ app_pool }}"
+        loop: "{{ template_apps }}"
+        tags: delete
 
-    - name: Remove virtual directories
-      win_shell:  Remove-Item -LiteralPath {{ dir_path }}{{ app_pool }}\{{ item }} -Recurse -Force
-      loop: "{{ template_apps }}"
+      - name: Remove virtual directories
+        win_shell:  Remove-Item -LiteralPath {{ dir_path }}{{ app_pool }}\{{ item }} -Recurse -Force
+        loop: "{{ template_apps }}"
+        tags: delete
+        ignore_errors: yes
       tags: delete
-      ignore_errors: yes
