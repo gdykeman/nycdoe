@@ -30,13 +30,12 @@ app_pools:
     name: payrollportal2.0
     state: present
     pipeline_mode: Integrated
-    runtime_version: v4.0
+    runtime_version: v2.0
     max_processes: 1
 
 
 # Specific app pool to utilize
 app_pool: payrollportal
-app_name: c2formweb
 
 # directory path
 # dir_path: 'c:\inetpub\wwwroot\{{app_pool}}\'
