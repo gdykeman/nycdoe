@@ -79,12 +79,10 @@
         # - name: win shell
         #   win_command: "{{ cli_command }}"
         #   when: cli_command is defined
+        # - name: run script
+        #   win_shell: "{{ shell_command }}"
+        #   when: shell_command is defined
       tags: create
-
-
-    - name: run script
-      win_shell: "{{ shell_command }}"
-      when: shell_command is defined
 
     - name: delete block
       block:
