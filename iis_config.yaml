@@ -71,9 +71,6 @@
           when: cli_command is defined
 
         - name: run script
-          # runs an actual PowerShell script
-          # ansible.windows.win_powershell: "{{ shell_command }}"
-          # runs arbitrary shell commands, defaults to powershell 
           ansible.windows.win_shell: "{{ shell_command }}"
           when: shell_command is defined
 
