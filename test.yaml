@@ -1,0 +1,9 @@
+---
+- name: test vars
+  hosts: all
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - debug:
+        msg: "{{ iis_username }} {{ iis_password }} {{iis_site}}"

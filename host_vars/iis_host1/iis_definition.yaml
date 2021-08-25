@@ -33,7 +33,6 @@ app_pools:
     runtime_version: v2.0
     max_processes: 1
 
-
 # Specific app pool to utilize
 app_pool: payrollportal
 

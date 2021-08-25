@@ -1,0 +1,64 @@
+# Features to enable
+win_features:
+  - RemoteAccess
+  - XPS-Viewer
+  - SNMP-Service
+
+
+# Connect As (specific_user | pass_through)
+# If not defined, task will run as pass_through
+connect_as: specific_user
+
+# iis definition(s)
+iis_username: User1
+iis_password: Password
+iis_site: "Default Web Site"
+
+# App pool defintion(s)
+app_pools:
+  pool1:
+    name: payrollportal
+    state: present
+    pipeline_mode: Integrated
+    runtime_version: v4.0
+    max_processes: 1
+  pool2:
+    name: payrollportal2.0
+    state: present
+    pipeline_mode: Integrated
+    runtime_version: v2.0
+    max_processes: 1
+  pool3:
+    name: payrollportal2.0
+    state: present
+    pipeline_mode: Integrated
+    runtime_version: v2.0
+    max_processes: 1
+  pool4:
+    name: payrollportal2.0
+    state: present
+    pipeline_mode: Integrated
+    runtime_version: v2.0
+    max_processes: 1
+
+# Specific app pool to utilize
+app_pool: payrollportal
+
+# directory path
+# dir_path: 'c:\inetpub\wwwroot\{{app_pool}}\'
+dir_path: 'c:\inetpub\wwwroot\'
+
+apps: [ "applicationmailweb", "aprlaccessweb", "aspnet_client",
+"bankaccountrequestweb", "c2formweb", "collegesavingsweb", "common", "configuration",
+"configuration2.2.6", "cpsaccessweb", "depositweb", "directdepositcorrectionsweb",
+"eftmobile", "eftreversalweb", "eftstoppayment", "eftstoppaymentweb",
+"empsalaryadjustmentweb", "eftweb", "epiweb", "help", "inquirytrackingmobile", "offline",
+"overtimerequestweb", "overtimewaiverweb", "payrollissueweb", "payrollissuewebext",
+"payrollportalmobile", "payrollportalweb", "payrollregistermobile", "payrollsecurityweb",
+"portalreportingweb", "pp", "relieffund", "requestforverificationweb",
+"salarydiffstepweb", "savingbondsweb", "services", "settings", "trainingsessionweb",
+"vendorinquirytrackingweb", "video", "vportalbridge", "w2correctionweb", "wageworksweb",
+"workerscompensationweb" ]
+
+template_apps: [ "applicationmailweb", "aprlaccessweb", "aspnet_client",
+"bankaccountrequestweb", "c2formweb" ]
