@@ -1,0 +1,12 @@
+---
+- name: iis tag check
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: delete vdir
+      poc.iis.remove_vdir:
+        name: "{{ item.key }}"
+        site: "{{ iis_site }}"
+        application: "{{ item.key }}"
+      loop: "{{ dictionary_apps | dict2items }}"

@@ -1,0 +1,11 @@
+---
+- name: template over web files
+  win_template:
+    src: appname.j2
+    dest: files/iis/index.html
+  delegate_to: localhost
+
+- name: Copy over web files
+  win_copy:
+    src: files/iis/
+    dest: '{{ dir_path }}{{item.value.pool}}\{{item.key}}'

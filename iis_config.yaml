@@ -1,17 +1,7 @@
 ---
-- name: iis tag check
+- name: configure IIS
   hosts: all
   gather_facts: no
-
-  tasks:
-    - name: Fail due to no tags
-      fail:
-        msg: "You must provide a tag of either create or delete"
-
-- name: iis configuration
-  hosts: all
-  gather_facts: no
-  tags: configure
 
   tasks:
     - name: enable features
@@ -44,12 +34,20 @@
 
     - name: Ensure virtual directories are present
       community.windows.win_iis_virtualdirectory:
-        name: '{{ item.key }}'
+        name: '{{ item.key }}_vdir'
         site: "{{ iis_site }}"
         application: "{{ item.key }}"
         state: "{{ item.value.state }}"
         physical_path: '{{ dir_path }}{{ item.value.pool }}\{{ item.key }}'
       loop: "{{ dictionary_apps | dict2items }}"
+
+    - name: delete vdir
+      poc.iis.remove_vdir:
+        name: "{{ item.key }}_vdir"
+        site: "{{ iis_site }}"
+        application: "{{ item.key }}"
+      loop: "{{ dictionary_apps | dict2items }}"
+      when: item.value.state == 'absent'
 
     - name: Configure webapplication on IIS (specific_user)
       community.windows.win_iis_webapplication:
@@ -64,7 +62,7 @@
       loop: "{{ dictionary_apps | dict2items }}"
 
     - name: template website
-      include_tasks: website_tasks.yaml
+      include_tasks: tasks/website_tasks.yaml
       args:
         apply:
           tags:
@@ -79,31 +77,3 @@
     - name: run script
       ansible.windows.win_shell: "{{ shell_command }}"
       when: shell_command is defined
-
-- name: iis delete all configurations
-  hosts: all
-  gather_facts: no
-  tags: delete
-
-  tasks:
-    - name: delete block
-      block:
-      - name: Delete webapplication on IIS (specific_user)
-        community.windows.win_iis_webapplication:
-          name: "{{ item.key }}"
-          site: "{{ iis_site }}"
-          state: absent
-          username: "{{ iis_username }}"
-          password: "{{ iis_password }}"
-          physical_path: '{{ dir_path }}{{ item.value.pool }}\{{ item.key }}'
-          connect_as: "{{ connect_as | default('pass_through')}}"
-          applicationpool: "{{ item.value.pool }}"
-        loop: "{{ dictionary_apps | dict2items }}"
-        tags: delete
-
-      - name: Remove virtual directories
-        win_shell: Remove-Item -LiteralPath {{ dir_path }}{{ item.value.pool }}\{{ item.key }} -Recurse -Force
-        loop: "{{ dictionary_apps | dict2items }}"
-        tags: delete
-        ignore_errors: yes
-      tags: delete

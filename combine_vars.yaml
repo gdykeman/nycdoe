@@ -1,0 +1,13 @@
+---
+- name: test vars
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: set fact
+      set_fact:
+        dictionary_apps: "{{ lookup('vars', item) | combine(dictionary_apps) }}"
+      loop: "{{ hostvars[inventory_hostname] | select('match', 'iis_app_.*') | list }}"
+
+    - debug:
+        msg: "{{ dictionary_apps }}"
