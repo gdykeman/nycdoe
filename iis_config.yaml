@@ -62,13 +62,8 @@
       loop: "{{ dictionary_apps | dict2items }}"
 
     - name: template website
-      include_tasks: tasks/website_tasks.yaml
-      args:
-        apply:
-          tags:
-            - template
+      include_tasks: tasks/{{ item.value.state }}.yaml
       loop: "{{ dictionary_apps | dict2items}}"
-      when: item.value.state == 'present'
 
     - name: win shell
       ansible.windows.win_command: "{{ cli_command }}"
