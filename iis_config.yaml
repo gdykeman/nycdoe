@@ -68,7 +68,7 @@
           tags:
             - template
       loop: "{{ dictionary_apps | dict2items}}"
-      tags: template
+      when: item.value.state == 'present'
 
     - name: win shell
       ansible.windows.win_command: "{{ cli_command }}"
