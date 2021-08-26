@@ -51,6 +51,9 @@ dictionary_apps:
   c2formweb:
     pool: payrollportal2.0
     state: present
+  epiweb:
+    pool: payrollportal
+    state: present
 
 
 # List of Apps
