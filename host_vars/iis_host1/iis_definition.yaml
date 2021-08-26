@@ -38,7 +38,7 @@ app_pools:
 dictionary_apps:
   applicationmailweb:
     pool: payrollportal
-    state: present
+    state: absent
   aprlaccessweb:
     pool: payrollportal2.0
     state: present
