@@ -21,6 +21,17 @@ iis_site: "Default Web Site"
 # base directory path
 dir_path: 'c:\inetpub\wwwroot\'
 
+# virtual directory
+virt_dirs:
+  alpha_vdir:
+    state: present
+    dir_state: directory
+    pool: payrollportal
+  beta_vdir:
+    state: present
+    dir_state: directory
+    pool: payrollportal
+
 # App pool defintion(s)
 app_pools:
   payrollportal:
@@ -48,108 +59,108 @@ dictionary_apps:
   bankaccountrequestweb:
     pool: payrollportal
     state: present
-  c2formweb:
-    pool: payrollportal2.0
-    state: present
-  collegesavingsweb:
-    pool: payrollportal
-    state: present
-  common:
-    pool: payrollportal
-    state: present
-  configuration:
-    pool: payrollportal
-    state: present
-  eftmobile:
-    pool: payrollportal
-    state: present
-  eftreversalweb:
-    pool: payrollportal
-    state: present
-  eftstoppayment:
-    pool: payrollportal
-    state: present
-  eftstoppaymentweb:
-    pool: payrollportal
-    state: present
-  empsalaryadjustmentweb:
-    pool: payrollportal
-    state: present
-  eftweb:
-    pool: payrollportal
-    state: present
-  epiweb:
-    pool: payrollportal
-    state: present
-  help:
-    pool: payrollportal
-    state: present
-  offline:
-    pool: payrollportal
-    state: present
-  overtimerequestweb:
-    pool: payrollportal
-    state: present
-  overtimewaiverweb:
-    pool: payrollportal
-    state: present
-  payrollissueweb:
-    pool: payrollportal
-    state: present
-  payrollissuewebext:
-    pool: payrollportal
-    state: present
-  payrollportalmobile:
-    pool: payrollportal
-    state: present
-  payrollportalweb:
-    pool: payrollportal
-    state: present
-  payrollregistermobile:
-    pool: payrollportal
-    state: present
-  portalreportingweb:
-    pool: payrollportal
-    state: present
-  pp:
-    pool: payrollportal
-    state: present
-  relieffund:
-    pool: payrollportal
-    state: present
-  requestforverificationweb:
-    pool: payrollportal
-    state: present
-  salarydiffstepweb:
-    pool: payrollportal
-    state: present
-  services:
-    pool: payrollportal
-    state: present
-  settings:
-    pool: payrollportal
-    state: present
-  trainingsessionweb:
-    pool: payrollportal
-    state: present
-  vendorinquirytrackingweb:
-    pool: payrollportal
-    state: present
-  video:
-    pool: payrollportal
-    state: present
-  vportalbridge:
-    pool: payrollportal
-    state: present
-  w2correctionweb:
-    pool: payrollportal
-    state: present
-  wageworksweb:
-    pool: payrollportal
-    state: present
-  workerscompensationweb:
-    pool: payrollportal
-    state: present
+  # c2formweb:
+  #   pool: payrollportal2.0
+  #   state: present
+  # collegesavingsweb:
+  #   pool: payrollportal
+  #   state: present
+  # common:
+  #   pool: payrollportal
+  #   state: present
+  # configuration:
+  #   pool: payrollportal
+  #   state: present
+  # eftmobile:
+  #   pool: payrollportal
+  #   state: present
+  # eftreversalweb:
+  #   pool: payrollportal
+  #   state: present
+  # eftstoppayment:
+  #   pool: payrollportal
+  #   state: present
+  # eftstoppaymentweb:
+  #   pool: payrollportal
+  #   state: present
+  # empsalaryadjustmentweb:
+  #   pool: payrollportal
+  #   state: present
+  # eftweb:
+  #   pool: payrollportal
+  #   state: present
+  # epiweb:
+  #   pool: payrollportal
+  #   state: present
+  # help:
+  #   pool: payrollportal
+  #   state: present
+  # offline:
+  #   pool: payrollportal
+  #   state: present
+  # overtimerequestweb:
+  #   pool: payrollportal
+  #   state: present
+  # overtimewaiverweb:
+  #   pool: payrollportal
+  #   state: present
+  # payrollissueweb:
+  #   pool: payrollportal
+  #   state: present
+  # payrollissuewebext:
+  #   pool: payrollportal
+  #   state: present
+  # payrollportalmobile:
+  #   pool: payrollportal
+  #   state: present
+  # payrollportalweb:
+  #   pool: payrollportal
+  #   state: present
+  # payrollregistermobile:
+  #   pool: payrollportal
+  #   state: present
+  # portalreportingweb:
+  #   pool: payrollportal
+  #   state: present
+  # pp:
+  #   pool: payrollportal
+  #   state: present
+  # relieffund:
+  #   pool: payrollportal
+  #   state: present
+  # requestforverificationweb:
+  #   pool: payrollportal
+  #   state: present
+  # salarydiffstepweb:
+  #   pool: payrollportal
+  #   state: present
+  # services:
+  #   pool: payrollportal
+  #   state: present
+  # settings:
+  #   pool: payrollportal
+  #   state: present
+  # trainingsessionweb:
+  #   pool: payrollportal
+  #   state: present
+  # vendorinquirytrackingweb:
+  #   pool: payrollportal
+  #   state: present
+  # video:
+  #   pool: payrollportal
+  #   state: present
+  # vportalbridge:
+  #   pool: payrollportal
+  #   state: present
+  # w2correctionweb:
+  #   pool: payrollportal
+  #   state: present
+  # wageworksweb:
+  #   pool: payrollportal
+  #   state: present
+  # workerscompensationweb:
+  #   pool: payrollportal
+  #   state: present
 
 
 # List of Apps

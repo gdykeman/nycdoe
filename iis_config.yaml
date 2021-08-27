@@ -26,27 +26,32 @@
           processModel.maxProcesses: "{{ item.value.max_processes }}"
       loop: "{{ app_pools | dict2items }}"
 
-    - name: Ensure directories are present
+    - name: Ensure directories for apps are present
       ansible.windows.win_file:
         path: '{{ dir_path }}{{ item.value.pool }}\{{ item.key }}'
         state: directory
       loop: "{{ dictionary_apps | dict2items }}"
 
+    - name: Ensure directories for virtual directories are present
+      ansible.windows.win_file:
+        path: '{{ dir_path }}{{ item.value.pool }}\{{ item.key }}'
+        state: "{{ item.value.dir_state }}"
+      loop: "{{ virt_dirs | dict2items }}"
+
     - name: Ensure virtual directories are present
       community.windows.win_iis_virtualdirectory:
-        name: '{{ item.key }}_vdir'
+        name: '{{ item.key }}'
         site: "{{ iis_site }}"
-        application: "{{ item.key }}"
         state: "{{ item.value.state }}"
         physical_path: '{{ dir_path }}{{ item.value.pool }}\{{ item.key }}'
-      loop: "{{ dictionary_apps | dict2items }}"
+      loop: "{{ virt_dirs | dict2items }}"
 
     - name: delete vdir
       poc.iis.remove_vdir:
-        name: "{{ item.key }}_vdir"
+        name: "{{ item.key }}"
         site: "{{ iis_site }}"
         application: "{{ item.key }}"
-      loop: "{{ dictionary_apps | dict2items }}"
+      loop: "{{ virt_dirs | dict2items }}"
       when: item.value.state == 'absent'
 
     - name: Configure webapplication on IIS (specific_user)
@@ -61,14 +66,14 @@
         application_pool: "{{ item.value.pool }}"
       loop: "{{ dictionary_apps | dict2items }}"
 
-    - name: template website
-      include_tasks: tasks/{{ item.value.state }}.yaml
-      loop: "{{ dictionary_apps | dict2items}}"
+    # - name: template website
+    #   include_tasks: tasks/{{ item.value.state }}.yaml
+    #   loop: "{{ dictionary_apps | dict2items}}"
 
-    - name: win shell
-      ansible.windows.win_command: "{{ cli_command }}"
-      when: cli_command is defined
+    # - name: win shell
+    #   ansible.windows.win_command: "{{ cli_command }}"
+    #   when: cli_command is defined
 
-    - name: run script
-      ansible.windows.win_shell: "{{ shell_command }}"
-      when: shell_command is defined
+    # - name: run script
+    #   ansible.windows.win_shell: "{{ shell_command }}"
+    #   when: shell_command is defined
