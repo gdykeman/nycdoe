@@ -24,13 +24,18 @@
           managedPipelineMode: "{{ item.value.pipeline_mode }}"
           managedRuntimeVersion: "{{ item.value.runtime_version }}"
           processModel.maxProcesses: "{{ item.value.max_processes }}"
+          processModel.identityType: "{{ item.value.identity_type }}"
+          processModel.userName: '{{ item.value.username }}'
+          processModel.password: '{{ item.value.password }}'
       loop: "{{ app_pools | dict2items }}"
+      tags: test
 
     - name: Ensure directories for apps are present
       ansible.windows.win_file:
-        path: '{{ dir_path }}{{ item.value.pool }}\{{ item.key }}'
+        path: '{{ dir_path }}{{item.value.pool}}\{{ item.key }}'
         state: directory
       loop: "{{ dictionary_apps | dict2items }}"
+      tags: test
 
     - name: Ensure directories for virtual directories are present
       ansible.windows.win_file:
