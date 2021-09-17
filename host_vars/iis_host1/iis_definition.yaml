@@ -17,6 +17,7 @@ connect_as: specific_user
 iis_username: TestUser1
 iis_password: TestPassword
 iis_site: "Default Web Site"
+iis_path: 'IIS:\Sites\'
 
 # base directory path
 # dir_path: 'c:\inetpub\wwwroot\'
@@ -28,10 +29,14 @@ virt_dirs:
     state: present
     dir_state: directory
     pool: payrollportal
+    username: AlphaTestUser
+    password: AlphaPassword
   beta_vdir:
     state: present
     dir_state: directory
     pool: payrollportal
+    username: BetaTestUser
+    password: BetaPassword
 
 # App pool defintion(s)
 app_pools:

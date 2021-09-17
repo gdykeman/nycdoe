@@ -49,6 +49,15 @@
         physical_path: '{{ dir_path }}{{ item.value.pool }}\{{ item.key }}'
       loop: "{{ virt_dirs | dict2items }}"
 
+    - name: configure virtual directory physical path credentials
+      poc.vdir.vdir_credentials:
+        name: "{{ item.key }}"
+        site: "{{ iis_site }}"
+        username: "{{ item.value.username }}"
+        password: "{{ item.value.password }}"
+      loop: "{{ virt_dirs | dict2items }}"
+      tags: test
+
     - name: delete vdir
       poc.iis.remove_vdir:
         name: "{{ item.key }}"
