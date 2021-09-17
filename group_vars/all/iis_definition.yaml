@@ -1,0 +1,189 @@
+# Features to enable
+win_features:
+  - RemoteAccess
+  - XPS-Viewer
+  - SNMP-Service
+  - Web-Mgmt-Tools
+  - Web-WHC
+  - BITS
+  - PowerShellRoot
+  - Web-Server
+
+# Connect As (specific_user | pass_through)
+# If not defined, task will run as pass_through
+connect_as: specific_user
+
+# iis definition(s)
+iis_username: TestUser1
+iis_password: TestPassword
+iis_site: "Default Web Site"
+iis_path: 'IIS:\Sites\'
+
+# base directory path
+# dir_path: 'c:\inetpub\wwwroot\'
+dir_path: 'c:\application_pool\'
+
+# virtual directory
+virt_dirs:
+  alpha_vdir:
+    state: present
+    dir_state: directory
+    pool: payrollportal
+    username: AlphaTestUser
+    password: AlphaPassword
+  beta_vdir:
+    state: present
+    dir_state: directory
+    pool: payrollportal
+    username: BetaTestUser
+    password: BetaPassword
+
+# App pool defintion(s)
+app_pools:
+  payrollportal:
+    state: present
+    pipeline_mode: Integrated
+    runtime_version: v4.0
+    max_processes: 1
+    identity_type: SpecificUser
+    username: 'ansible_domain\testuser1'
+    password: testpassword
+  payrollportal2.0:
+    state: present
+    pipeline_mode: Integrated
+    runtime_version: v2.0
+    max_processes: 1
+    identity_type: SpecificUser
+    username: 'ansible_domain\testuser2'
+    password: testpassword
+
+# Application definitions
+dictionary_apps:
+  applicationmailweb:
+    pool: payrollportal
+    state: present
+  aprlaccessweb:
+    pool: payrollportal2.0
+    state: present
+  aspnet_client:
+    pool: payrollportal
+    state: present
+  bankaccountrequestweb:
+    pool: payrollportal
+    state: present
+  c2formweb:
+    pool: payrollportal2.0
+    state: present
+  collegesavingsweb:
+    pool: payrollportal
+    state: present
+  common:
+    pool: payrollportal
+    state: present
+  configuration:
+    pool: payrollportal
+    state: present
+  eftmobile:
+    pool: payrollportal
+    state: present
+  eftreversalweb:
+    pool: payrollportal
+    state: present
+  eftstoppayment:
+    pool: payrollportal
+    state: present
+  eftstoppaymentweb:
+    pool: payrollportal
+    state: present
+  empsalaryadjustmentweb:
+    pool: payrollportal
+    state: present
+  eftweb:
+    pool: payrollportal
+    state: present
+  epiweb:
+    pool: payrollportal
+    state: present
+  help:
+    pool: payrollportal
+    state: present
+  offline:
+    pool: payrollportal
+    state: present
+  overtimerequestweb:
+    pool: payrollportal
+    state: present
+  overtimewaiverweb:
+    pool: payrollportal
+    state: present
+  payrollissueweb:
+    pool: payrollportal
+    state: present
+  payrollissuewebext:
+    pool: payrollportal
+    state: present
+  payrollportalmobile:
+    pool: payrollportal
+    state: present
+  payrollportalweb:
+    pool: payrollportal
+    state: present
+  payrollregistermobile:
+    pool: payrollportal
+    state: present
+  portalreportingweb:
+    pool: payrollportal
+    state: present
+  pp:
+    pool: payrollportal
+    state: present
+  relieffund:
+    pool: payrollportal
+    state: present
+  requestforverificationweb:
+    pool: payrollportal
+    state: present
+  salarydiffstepweb:
+    pool: payrollportal
+    state: present
+  services:
+    pool: payrollportal
+    state: present
+  settings:
+    pool: payrollportal
+    state: present
+  trainingsessionweb:
+    pool: payrollportal
+    state: present
+  vendorinquirytrackingweb:
+    pool: payrollportal
+    state: present
+  video:
+    pool: payrollportal
+    state: present
+  vportalbridge:
+    pool: payrollportal
+    state: present
+  w2correctionweb:
+    pool: payrollportal
+    state: present
+  wageworksweb:
+    pool: payrollportal
+    state: present
+  workerscompensationweb:
+    pool: payrollportal
+    state: present
+
+
+# List of Apps
+apps: [ "applicationmailweb", "aprlaccessweb", "aspnet_client",
+"bankaccountrequestweb", "c2formweb", "collegesavingsweb", "common", "configuration",
+"configuration2.2.6", "cpsaccessweb", "depositweb", "directdepositcorrectionsweb",
+"eftmobile", "eftreversalweb", "eftstoppayment", "eftstoppaymentweb",
+"empsalaryadjustmentweb", "eftweb", "epiweb", "help", "inquirytrackingmobile", "offline",
+"overtimerequestweb", "overtimewaiverweb", "payrollissueweb", "payrollissuewebext",
+"payrollportalmobile", "payrollportalweb", "payrollregistermobile", "payrollsecurityweb",
+"portalreportingweb", "pp", "relieffund", "requestforverificationweb",
+"salarydiffstepweb", "savingbondsweb", "services", "settings", "trainingsessionweb",
+"vendorinquirytrackingweb", "video", "vportalbridge", "w2correctionweb", "wageworksweb",
+"workerscompensationweb" ]
