@@ -1,0 +1,4 @@
+iis_app_offline:
+  offline:
+    pool: payrollportal
+    state: present

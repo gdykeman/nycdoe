@@ -1,0 +1,11 @@
+---
+all:
+  hosts:
+    win-2:
+      ansible_connection: winrm
+      ansible_port: 5986
+      ansible_winrm_transport: ntlm
+      ansible_winrm_server_cert_validation: ignore
+      ansible_user: Administrator
+      ansible_password: X@.FchBO*8Eo)k6tSc=ZYUkK.kKl.vOi
+      ansible_host: 3.15.254.81
